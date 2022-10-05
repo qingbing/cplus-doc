@@ -1,5 +1,6 @@
 
 .idea
+.vscode
+a.out
 tmp
-
-t.sh
+*.out

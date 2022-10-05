@@ -23,7 +23,7 @@ function in_array()
 	if [[ "$val" == null ]]; then
 		return 0
 	fi
-	for i in ${arr[@]}; do
+	for i in "${arr[@]}"; do
 		if [[ "$i" == "$val" ]]; then
 			return 1;
 		fi
