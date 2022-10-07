@@ -78,7 +78,7 @@ int main(int argc, char const *argv[])
     int num_42 = 42;
     printf("交换前， num_41: %d; num_42: %d \n", num_41, num_42);
     swap(&num_41, &num_42);
-    printf("交换前， num_41: %d; num_42: %d \n", num_41, num_42);
+    printf("交换后， num_41: %d; num_42: %d \n", num_41, num_42);
 
     /* 函数返回指针 */
     int *ptr_51;
