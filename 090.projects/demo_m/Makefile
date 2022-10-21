@@ -32,7 +32,6 @@ LIBS =
 
 main: ${SRCS} test02
 	${CC} ${SRCS} -o $@ ${LIB_PATH} ${LIBS} ${HEADER_PATH} -l stmath -l symath -l test02
-#	${CC} $^ -o $@ ${LIB_PATH} ${LIBS} ${HEADER_PATH} -l stmath -l symath -l test02
 
 # MAKEFLAGS= 让父级的 MAKEFLAGS 值不传递
 test02:

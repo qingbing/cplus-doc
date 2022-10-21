@@ -1,6 +1,7 @@
+# 静态库, 文件后缀为 .so 或 .ddl
 # 动态库核心命令
 # 生成目标文件: gcc -c -fpic add.c -o add.o
-# 生成动态库: gcc -shared  ./add.o  ./sub.o -o libmymath.a
+# 生成动态库: gcc -shared  ./add.o  ./sub.o -o libsymath.so
 
 # 通用变量
 CROSS =
@@ -12,7 +13,7 @@ RM = rm -rf
 SRCS = $(wildcard ./*.c)
 OBJS = $(patsubst %.c, %.o, ${SRCS})
 
-TARGET = libsymath.a
+TARGET = libsymath.so
 
 all: ${TARGET}
 .PHONY: all

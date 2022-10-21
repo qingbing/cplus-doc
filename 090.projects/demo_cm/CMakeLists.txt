@@ -14,7 +14,7 @@ link_directories(libs)
 # link_libraries("/root/../libxxx.a")
 
 # 设置本项目信息，非必须的
-project(demo VERSION 0.1.0)
+project(app VERSION 0.1.0)
 
 # 搜索编译源文件
 aux_source_directory(. SRC_LISTS)
@@ -25,14 +25,14 @@ message("SRC_LISTS = ${SRC_LISTS}")
 add_subdirectory(test_02)
 
 # 设置项目编译类型
-add_executable(demo ${SRC_LISTS})
+add_executable(app ${SRC_LISTS})
 
 # 设置要链接的库文件的名称
-target_link_libraries(demo test_02 stmath symath)
+target_link_libraries(app test_02 stmath symath)
 
 # 设置要链接的库文件的名称
 # find_library(SYNC_LIB sum libs)
 # set(SYNC_LIB sum test_02)
 # message("SYNC_LIB = ${SYNC_LIB}")
-# target_link_libraries(demo ${SYNC_LIB})
+# target_link_libraries(app ${SYNC_LIB})
 

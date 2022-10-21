@@ -1,6 +1,7 @@
+# 静态库, 文件后缀为 .a 或 .lib
 # 静态库核心命令
 # 生成目标文件: gcc -c add.c -o add.o
-# 将目标文件打包: ar rcs libmymath.so  ./add.o  ./sub.o
+# 将目标文件打包: ar rcs libmymath.a ./add.o  ./sub.o
 
 # 通用变量
 CROSS =
@@ -12,7 +13,7 @@ RM = rm -rf
 SRCS = $(wildcard ./*.c)
 OBJS = $(patsubst %.c, %.o, ${SRCS})
 
-TARGET = libstmath.so
+TARGET = libstmath.a
 
 all: ${TARGET}
 .PHONY: all

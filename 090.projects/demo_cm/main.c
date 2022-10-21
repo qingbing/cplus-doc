@@ -1,10 +1,10 @@
 #include <stdio.h>
+#include <unistd.h>
 #include "test.h"
 #include "test_01/test_01.h"
 #include "test_02/test_02.h"
 #include "static-mymath.h"
 #include "sync-mymath.h"
-
 
 // 1. 直接运行
 // 2. 加载当前目录
@@ -34,5 +34,12 @@ int main(int argc, char const *argv[])
     printf("==== 外部动态库加载 .so 文件 ====\n");
     printf("7+5 = %d\n", SyncAdd(7, 5));
     printf("7-5 = %d\n", SyncSub(7, 5));
+
+    while (1)
+    {
+        sleep(2);
+        print_test01();
+    }
+    
     return 0;
 }
