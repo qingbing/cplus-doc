@@ -6,18 +6,17 @@ CC = $(CROSS)gcc
 all: run
 
 SRCS = $(wildcard ./*.c)
-TARGET = demo
+TARGET = demo.out
 
 show:
 	@echo ${SRCS}
 	@echo ${TARGET}
 
 ${TARGET}: ${SRCS}
-	echo ${SRCS}
 	${CC} $^ -o ${TARGET}
 
 run: ${TARGET}
-	sh -c ${TARGET}
+	./${TARGET}
 
 clean:
 	${RM} ${TARGET}

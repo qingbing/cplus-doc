@@ -4,6 +4,6 @@
 int main(int argc, char const *argv[])
 {
     printf("Hello\n");
-    printf("5 + 2 = %d", add(5, 2));
+    printf("5 + 2 = %d\n", add(5, 2));
     return 0;
 }
