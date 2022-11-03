@@ -53,16 +53,26 @@ md为主的文案
     - 030.面向对象
         - [001.类和对象简介](./051.cplusdoc/030.面向对象/001.类和对象简介.md)
 - 090.projects
-    - 004.demo_mem
-        - [mem系列函数介绍](./090.projects/004.demo_mem/mem系列函数介绍.md)
-    - 005.demo_main
-        - [c语言main函数参数问题](./090.projects/005.demo_main/c语言main函数参数问题.md)
+    - 004.mem
+        - [mem系列函数介绍](./090.projects/004.mem/mem系列函数介绍.md)
+    - 005.main_args
+        - [c语言main函数参数问题](./090.projects/005.main_args/c语言main函数参数问题.md)
+    - 006.void_pointer
+        - [c语言中void指针的用法](./090.projects/006.void_pointer/c语言中void指针的用法.md)
 - 100.other
     - [001.计算机知识](./100.other/001.计算机知识.md)
     - [002.c语言动态库的编写](./100.other/002.c语言动态库的编写.md)
 - tmp
     - [readme](./tmp/readme.md)
+    - demo_sem
+        - [c语言中信号量的使用](./tmp/demo_sem/c语言中信号量的使用.md)
     - demo_tcp
         - [tcp编程整理](./tmp/demo_tcp/tcp编程整理.md)
     - demo_udp
         - [udp编程整理](./tmp/demo_udp/udp编程整理.md)
+    - thread
+        - [c语言多线程的使用](./tmp/thread/c语言多线程的使用.md)
+        - lock
+            - [c语言多线程中lock的使用](./tmp/thread/lock/c语言多线程中lock的使用.md)
+        - string
+            - [c语言中字符串的使用](./tmp/thread/string/c语言中字符串的使用.md)
