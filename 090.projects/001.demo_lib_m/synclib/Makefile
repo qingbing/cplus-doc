@@ -1,4 +1,4 @@
-# 静态库, 文件后缀为 .so 或 .ddl
+# 静态库, 文件后缀为 .so 或 .dll
 # 动态库核心命令
 # 生成目标文件: gcc -c -fpic add.c -o add.o
 # 生成动态库: gcc -shared  ./add.o  ./sub.o -o libsymath.so

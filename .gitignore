@@ -4,6 +4,7 @@
 a.out
 tmp
 *.out
+*.log
 
 
 https://www.cnblogs.com/isabel-1996/p/13660053.html
