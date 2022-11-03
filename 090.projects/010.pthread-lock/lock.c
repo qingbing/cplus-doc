@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <pthread.h>
+#include <unistd.h>
 
 extern void *print();
 
@@ -48,6 +49,7 @@ void *print(void *ptr)
     for (int i = 0; i < 1000000; i++)
     {
         printf("%s: %d\n", ch, global_num++);
+        usleep(1000000);
     }
     pthread_mutex_unlock(&thread_lock);
 }

@@ -3,18 +3,38 @@
 - 参考链接
   - https://blog.csdn.net/baidu_35692628/article/details/69487525
 
+
+==pthread 库不是 Linux 系统默认的库，连接时需要使用静态库 libpthread.a，所以在使用pthread_create()创建线程，以及调用 pthread_atfork()函数建立fork处理程序时，需要链接该库` -lpthread`==
+
+```shell
+gcc thread.c -o thread -lpthread
+```
+
 ## 1. 描述
 
-### 1.1 什么是线程
+### 1.1 进程和线程
 
+- 什么时进程？
+
+进程指的是一个正在执行的应用程序。
+
+- 什么时线程？
+
+线程的功能是执行应用程序中的某个具体的任务，比如一段程序，一个函数。
+
+- 进程和线程的联系
+  - 每个进程执行前，操作系统都会为其分配所需的资源，包括要执行的程序代码、数据、内存空间等。一个进程至少包含1个线程，可以包含多个线程，所有线程共享进程的资源，各个线程也可以拥有属于自己的私有资源
+  - 进程仅负责为各个线程提供所需的资源，真正执行任务的是线程，而不是进程
+  - 多线程，即一个进程中拥有多个（>=2）线程，线程之间相互协作，共同执行一个应用程序
 
 ### 1.2 线程使用
 
 - 需要加入头文件: &lt;pthread.h&gt;
+- 编译时
 
 ## 2. 线程中结构
 
-## 2.1 pthread_t 结构体
+### 2.1 pthread_t 结构体
 
 ```c
 // 由 restrict 修饰的指针是最初唯一对指针所指向的对象进行存取的方法，仅当第二个指针基于第一个时，才能对对象进行存取
@@ -596,6 +616,167 @@ int pthread_attr_setinheritsched (pthread_attr_t *attr, int inheritsched);
 
 ## 5. 线程 demo
 
-```c
+## 5.1 普通 demo
 
+```c
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <pthread.h>
+#include <unistd.h>
+
+// 预定义
+extern void *func01();
+
+typedef struct
+{
+    char name[50]; // 名称传递
+    int count;     // 循环次数
+    int status;    // 表示执行状态
+} Params;
+
+int main()
+{
+    // 定义线程标志
+    pthread_t thread01;
+    pthread_t thread02;
+
+    // 创建线程1
+    Params subParam1 = {"sub01", 5};
+    if (0 != pthread_create(&thread01, NULL, func01, &subParam1))
+    {
+        printf("Create thread 01 failed!");
+        return 0;
+    }
+
+    // 创建线程2
+    Params subParam2 = {"sub02", 15};
+    if (0 != pthread_create(&thread02, NULL, func01, &subParam2))
+    {
+        printf("Create thread 02 failed!");
+        return 0;
+    }
+
+    // 加入
+    Params mParam = {"main", 5};
+    func01(&mParam);
+
+    // 将需要等待的子线程加入等待,否则主线程执行完后直接结束了
+    // 不需要返回值
+    if (0 != pthread_join(thread01, NULL))
+    {
+        printf("Join thread 01 failed!");
+    }
+
+    void *subBack1;
+    Params *subBack2 = (Params *)malloc(sizeof(Params)); // 返回之需要先分配下内存
+    if (0 != pthread_join(thread02, (void **)&subBack2))
+    {
+        printf("Join thread 02 failed!");
+    }
+
+    printf("thread02 excecute status: %d\n", subBack2->status);
+    return 0;
+}
+
+void *func01(void *vPtr)
+{
+    Params *ptr = (Params *)vPtr;
+    for (int i = 0; i < ptr->count; i++)
+    {
+        if (i > 10)
+        {
+            ptr->status = 100;
+            pthread_exit(vPtr);
+        }
+        usleep(10000);
+        printf("func01: %d, name: %s, pthread_self: %lu\n", i, ptr->name, pthread_self());
+    }
+}
+```
+
+## 5.12 线程共同求和 demo
+
+```c
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <pthread.h>
+#include <unistd.h>
+
+struct Params
+{
+    int arr[1000];
+    int start;
+    int end;
+    int sum;
+};
+
+// 预定义
+extern void *sum();
+extern int computeSum(struct Params p1);
+
+int main()
+{
+    // 创建数组
+    int a[1000];
+    int start = 0;
+    for (int i = 0; i < 1000; i++)
+    {
+        a[i] = i + start;
+    }
+
+    // 创建线程1
+    struct Params p1;
+    memcpy(p1.arr, a, sizeof(int) * 1000); // 数组从内存复制
+    p1.start = 0;
+    p1.end = 500;
+
+    struct Params p2;
+    memcpy(p2.arr, a, sizeof(int) * 1000); // 数组从内存复制
+    p2.start = 500;
+    p2.end = 1000;
+
+    int sum1 = computeSum(p1);
+    int sum2 = computeSum(p2);
+    printf("sum1: %d\n", sum1);
+    printf("sum2: %d\n", sum2);
+    return 0;
+}
+
+void *sum(void *ptr)
+{
+    struct Params *aPtr = (struct Params *)ptr;
+    aPtr->sum = 0;
+    for (int i = aPtr->start; i < aPtr->end; i++)
+    {
+        aPtr->sum += aPtr->arr[i];
+    }
+    printf("%d\n", aPtr->sum);
+    return ptr;
+}
+
+int computeSum(struct Params p1)
+{
+    // 定义线程标志
+    pthread_t thread;
+
+    if (pthread_create(&thread, NULL, sum, &p1))
+    {
+        printf("Create thread 01 failed!");
+        return 0;
+    }
+    // 线程等待
+    struct Params *subBack = (struct Params *)malloc(sizeof(struct Params)); // 返回之需要先分配下内存
+    if (0 != pthread_join(thread, (void **)&subBack))
+    {
+        printf("Join thread failed!");
+        return 0;
+    }
+    else
+    {
+        printf("Thread 01 sum: %d\n", subBack->sum);
+        return subBack->sum;
+    }
+}
 ```

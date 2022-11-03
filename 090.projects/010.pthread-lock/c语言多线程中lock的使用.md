@@ -93,6 +93,22 @@ void *print(void *ptr)
 
 ### 2.2 互斥锁解决数据混乱
 
+```output
+... 几乎每次结束都不一样
+thread02: 1999988
+thread02: 1999989
+thread02: 1999990
+thread02: 1999991
+thread02: 1999992
+thread02: 1999993
+thread02: 1999994
+thread02: 1999995
+thread02: 1999996
+thread02: 1999997
+Main end: 1999998
+
+```
+
 ```c
 #include <stdio.h>
 #include <pthread.h>
