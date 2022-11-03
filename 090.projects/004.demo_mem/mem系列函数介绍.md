@@ -119,8 +119,6 @@ void* my_memchr(const char* str,int c,size_t n)
 }
 ```
 
-
-
 ### 2.2 简单使用
 
 ```c
