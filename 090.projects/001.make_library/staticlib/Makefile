@@ -1,34 +1,27 @@
 # 静态库, 文件后缀为 .a 或 .lib
 # 静态库核心命令
-# 生成目标文件: gcc -c add.c -o add.o
-# 将目标文件打包: ar rcs libmymath.a ./add.o  ./sub.o
+# 生成目标文件: gcc -c %.c -o %.o
+# 将目标文件打包: ar rcs ${TARGET} ${OBJ}
 
-# 通用变量
-CROSS =
-CC = ${CROSS}gcc
-CXX = ${CROSS}g++
-RM = rm -rf
-
-# 所有源文件
-SRCS = $(wildcard ./*.c)
-OBJS = $(patsubst %.c, %.o, ${SRCS})
-
-TARGET = libstmath.a
+CUSTOM_LIBS = /code/clibs
+TARGET = ${CUSTOM_LIBS}/libStaticTest.a
+SRC = $(wildcard *.c)
+OBJ = $(patsubst %.c, %.o, ${SRC})
 
 all: ${TARGET}
-.PHONY: all
 
-.PHONY: test
-test:
-	@echo ${SRCS}
-	@echo ${OBJS}
+${TARGET}: ${OBJ}
+	${AR} rcs ${TARGET} ${OBJ}
 
-${OBJS}: %.o : %.c
-	${CC} -c $< -o $@
-
-${TARGET}: ${OBJS}
-	ar rcs ${TARGET} ${OBJS}
+%.o: %.c
+	${CC} -c $^ -o $@
 
 clean:
-	$(RM) ${TARGET} *.o
-.PHONY: clean
+	${RM} ${OBJ} ${TARGET}
+
+show:
+	@echo TARGET: ${TARGET}
+	@echo SRC: ${SRC}
+	@echo OBJ: ${OBJ}
+
+.PHONY: all

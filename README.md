@@ -53,6 +53,11 @@ md为主的文案
     - 030.面向对象
         - [001.类和对象简介](./051.cplusdoc/030.面向对象/001.类和对象简介.md)
 - 090.projects
+    - 001.make_library
+        - staticlib
+            - [c语言静态库制作](./090.projects/001.make_library/staticlib/c语言静态库制作.md)
+        - synclib
+            - [c语言动态库制作](./090.projects/001.make_library/synclib/c语言动态库制作.md)
     - 004.mem
         - [mem系列函数介绍](./090.projects/004.mem/mem系列函数介绍.md)
     - 005.main_args
