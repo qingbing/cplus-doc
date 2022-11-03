@@ -55,12 +55,14 @@ md为主的文案
 - 090.projects
     - 004.demo_mem
         - [mem系列函数介绍](./090.projects/004.demo_mem/mem系列函数介绍.md)
+    - 005.demo_main
+        - [c语言main函数参数问题](./090.projects/005.demo_main/c语言main函数参数问题.md)
 - 100.other
     - [001.计算机知识](./100.other/001.计算机知识.md)
     - [002.c语言动态库的编写](./100.other/002.c语言动态库的编写.md)
 - tmp
     - [readme](./tmp/readme.md)
-    - 005.demo_udp
-        - [udp编程整理](./tmp/005.demo_udp/udp编程整理.md)
-    - 006.demo_tcp
-        - [tcp编程整理](./tmp/006.demo_tcp/tcp编程整理.md)
+    - demo_tcp
+        - [tcp编程整理](./tmp/demo_tcp/tcp编程整理.md)
+    - demo_udp
+        - [udp编程整理](./tmp/demo_udp/udp编程整理.md)
