@@ -58,3 +58,9 @@ md为主的文案
 - 100.other
     - [001.计算机知识](./100.other/001.计算机知识.md)
     - [002.c语言动态库的编写](./100.other/002.c语言动态库的编写.md)
+- tmp
+    - [readme](./tmp/readme.md)
+    - 005.demo_udp
+        - [udp编程整理](./tmp/005.demo_udp/udp编程整理.md)
+    - 006.demo_tcp
+        - [tcp编程整理](./tmp/006.demo_tcp/tcp编程整理.md)

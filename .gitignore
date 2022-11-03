@@ -2,7 +2,7 @@
 .idea
 .vscode
 a.out
-tmp
+*.o
 *.out
 *.log
 
