@@ -1,6 +1,6 @@
 # 预定义目标文件
 ifndef TARGET
-TARGET:=demo
+TARGET:=demo.out
 endif
 
 SRC = $(wildcard *.c)
