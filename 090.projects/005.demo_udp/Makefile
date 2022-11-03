@@ -1,22 +1,25 @@
-CROSS =
-CC = $(CROSS)gcc
+TARGET:=server.out client.out
 
-.PHONY: all run clean show
+SRC = $(wildcard *.c)
+OBJ = $(patsubst %.c, %.o, ${SRC})
 
-all: run
+all: ${TARGET}
 
-SRCS = $(wildcard ./*.c)
-TARGET = demo.out
+%.o: %.c
+	${CC} -c $^ -o $@
 
-show:
-	@echo ${SRCS}
-	@echo ${TARGET}
+server.out: server.o
+	${CC} $^ -o $@
 
-${TARGET}: ${SRCS}
-	${CC} $^ -o ${TARGET}
-
-run: ${TARGET}
-	./${TARGET}
+client.out: client.o
+	${CC} $^ -o $@
 
 clean:
-	${RM} ${TARGET}
+	${RM} ${OBJ} ${TARGET}
+
+show:
+	@echo TARGET: ${TARGET}
+	@echo SRC: ${SRC}
+	@echo OBJ: ${OBJ}
+
+.PHONY: all clean show
