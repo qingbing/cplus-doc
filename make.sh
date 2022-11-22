@@ -14,10 +14,10 @@ function printLineTip()
 ########################### 函数库 END   ###########################
 
 # 获取脚本所在目录
-rPath=$(cd $(dirname $0); pwd)
+rPath=$(cd "$(dirname "${0}")" || exit; pwd)
 # 1.进入根目录
 printLineTip 1.进入根目录
-cd $rPath
+cd "${rPath}" || exit
 
 # 2.重新生成目录
 printLineTip 2.重新生成索引文件
@@ -31,10 +31,11 @@ git add README.md
 printLineTip 4.commit
 commitMsg=$1
 # check comment
-if [[ ! -n $commitMsg ]]; then
-	commitMsg=`date "+%Y${dateExp}%m${dateExp}%d${exp}%H${secExp}%M"`
+if [[ -z $commitMsg ]]; 
+then
+	commitMsg=$(date "+%Y%m%d%H%M")
 fi
-git commit -m $commitMsg
+git commit -m "${commitMsg}"
 
 # 提交 git
 printLineTip 5.push

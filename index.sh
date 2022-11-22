@@ -19,12 +19,12 @@ function file_extension()
 function in_array()
 {
 	val=$1
-	arr=$2
-	if [[ "$val" == null ]]; then
+	local arr=($(echo "${2}"))
+	if [ "$val" == null ]; then
 		return 0
 	fi
 	for i in "${arr[@]}"; do
-		if [[ "$i" == "$val" ]]; then
+		if [ "$i" == "$val" ]; then
 			return 1;
 		fi
 	done
@@ -41,11 +41,10 @@ function filename()
 ########################### 函数库 END   ###########################
 
 # 获取脚本所在目录
-rPath=$(cd $(dirname $0); pwd)
+rPath=$(cd "$(dirname "${0}")" || exit; pwd)
 
 # 索引文件名
 indexFileName=README.md
-
 indexFile=${rPath}/${indexFileName}
 
 # 判断文件目录中是否包含 md 文件
@@ -55,17 +54,17 @@ function hasMdFile()
 	echo "Browse Path: ${sPath}"
 	for _file in $(ls $sPath); do
 		local filePath="${sPath}/${_file}"
-
 		# 目录
 		if [[ -d $filePath ]]; then
-			hasMdFile $filePath
+			hasMdFile "${filePath}"
 			if [[ $? -ne 0 ]]; then
 				return 1
 			fi
 			continue
 		fi
 
-		local fileExt=`file_extension $_file`
+		local fileExt
+		fileExt=$(file_extension "${_file}")
 		# 文件扩展判断为 md
 		if [[ "${fileExt}" == "md" || "${fileExt}" == "MD" ]]; then
 			return 1
@@ -74,13 +73,17 @@ function hasMdFile()
 	return 0
 }
 
-# 目录循环
+# 目录循环并执行相关逻辑
+#   p1: 检查文件路径
+#   p2: 当前目录的路径(前缀)
+#   p3: 输出时前缀空格
+#   p4: () 括号数组，忽略的文件或文件夹
 function generateMdIndex()
 {
 	local sPath=$1
 	local prefix=$2
 	local space=$3
-	local ingoreFiles=$4
+	local ingores=($(echo "${4}"))
 
 	# 定义变量
 	local files=()
@@ -89,7 +92,7 @@ function generateMdIndex()
 	local folderIdx=0
 	for file in $(ls $sPath); do
 		# 忽略文件
-		in_array $file "${ingoreFiles[*]}"
+		in_array "${file}" "${ingores[*]}"
 		isIngoreFile=$?
 		if [[ $isIngoreFile -eq 1 ]]; then
 			continue;
@@ -100,45 +103,46 @@ function generateMdIndex()
 		# 目录
 		if [[ -d $filePath ]]; then
 			folders[folderIdx]=$filePath;
-			let "folderIdx=$folderIdx + 1"
+			(( folderIdx="${folderIdx}" + 1 )) || true
 			continue;
 		fi
 
 		#文件扩展
-		local fileExt=`file_extension $file`
+		local fileExt
+		fileExt=$(file_extension "${file}")
 		# 文件扩展判断为 md
 		if [[ "${fileExt}" == "md" || "${fileExt}" == "MD" ]]; then
 			files[fileIdx]=$filePath;
-			let "fileIdx=$fileIdx + 1"
+			(( fileIdx="${fileIdx}" + 1 )) || true
 		fi
 	done
 
 	# 文件加载（执行）
-	for file in ${files[*]}; do
+	for file in "${files[@]}"; do
 		# 获取文件名
-		relativeFilename=`basename $file`
-		filename=`filename $relativeFilename`
+		relativeFilename=$(basename "${file}")
+		filename=$(filename "${relativeFilename}")
 
 		echo "${space}- [$filename]($prefix/$relativeFilename)" >> $indexFile
     done
     # 递归加载文件夹
-	for file in ${folders[*]}; do
-		basepath=`basename $file`
-		hasMdFile $file;
+	for file in "${folders[@]}"; do
+		basepath=$(basename "${file}")
+		hasMdFile "${file}";
 		if [[ $? -eq 0 ]]; then
 			continue;
 		fi
-		echo "${space}- $basepath" >> $indexFile
-		generateMdIndex $file $prefix/$basepath "${space}    "
+		echo "${space}- ${basepath}" >> "${indexFile}"
+		generateMdIndex "${file}" "${prefix}"/"${basepath}" "${space}    "
     done
 }
 
 echo "# md.doc
 md为主的文案
-" > $indexFile;
+" > "${indexFile}";
 
+# 忽略文件或文件夹定义
+ingoreFiles=("${indexFileName}" tmp)
 
-ingoreFiles=($indexFileName tmp)
-
-generateMdIndex $rPath '.' "" "${ingoreFiles[*]}"
+generateMdIndex "${rPath}" '.' "" "${ingoreFiles[*]}"
 
