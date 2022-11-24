@@ -71,6 +71,8 @@ md为主的文案
         - [c语言中信号量的使用](./090.projects/009.pthread-sem/c语言中信号量的使用.md)
     - 010.pthread-lock
         - [c语言多线程中lock的使用](./090.projects/010.pthread-lock/c语言多线程中lock的使用.md)
+    - 011.demo-socket
+        - [readme](./090.projects/011.demo-socket/readme.md)
 - 100.other
     - [001.计算机知识](./100.other/001.计算机知识.md)
     - [002.c语言动态库的编写](./100.other/002.c语言动态库的编写.md)

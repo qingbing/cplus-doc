@@ -5,10 +5,12 @@ endif
 
 SRC = $(wildcard *.c)
 OBJ = $(patsubst %.c, %.o, ${SRC})
+TARGET = server.out client.out
 
 all: ${TARGET}
-
-${TARGET}: ${OBJ}
+	
+%.out: %.o
+# ${TARGET}: ${OBJ}
 	${CC} $^ -o $@
 
 %.o: %.c

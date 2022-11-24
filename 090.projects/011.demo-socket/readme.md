@@ -26,7 +26,7 @@ struct in_addr {
 
 ```c
 struct sockaddr_in {
-    short int sin_family; // 通信类型, 通常使用AF_INET(IPv4的网络协议套接字类型), windows 和 linux 系统相同
+    short int sin_family; // 通信类型, 通常使用 AF_INET (IPv4的网络协议套接字类型), windows 和 linux 系统相同
     unsigned short int sin_port; // 端口号。范围是 0-65535
     struct in_addr sin_addr; // Internet 地址
     unsigned char sin_zero[8]; // 用于保存sockadd数据，需要使用 memset 置零
@@ -249,4 +249,156 @@ int shutdown(int sockfd, int how);
  
 sockfd = socket(AF_INET, SOCK_STREAM, 0);
 fcntl(sockfd, F_SETFL, O_NONBLOCK);
+```
+
+## 4. demo 演示
+### 4.1 服务端(SERVER)
+
+```c
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <arpa/inet.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <assert.h>
+
+int main()
+{
+    // 创建套接字，返回套接字的文件操作符
+    // int servSocketFd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+    int servSocketFd = socket(AF_INET, SOCK_STREAM, 0);
+    // 确保套接字创建成功
+    assert(servSocketFd != -1);
+
+    // 将套接字和IP、端口绑定
+    struct sockaddr_in servAddr;
+    // 每个字节都用0填充
+    memset(&servAddr, 0, sizeof(servAddr));
+    servAddr.sin_family = AF_INET;                     // 使用IPv4地址
+    servAddr.sin_addr.s_addr = inet_addr("127.0.0.1"); // 具体的IP地址
+    servAddr.sin_port = htons(1234);                   // 端口
+
+    // 绑定端口
+    if (-1 == bind(servSocketFd, (struct sockaddr *)&servAddr, sizeof(servAddr)))
+    {
+        // 绑定端口失败
+        printf("bind error\n");
+        return -1;
+    }
+
+    // 监听端口，限制最大队列为20个
+    if (-1 == listen(servSocketFd, 20))
+    {
+        // 监听失败
+        printf("listen error\n");
+    }
+
+    printf("服务器启动....\n");
+    printf("ip: %s\n", inet_ntoa(servAddr.sin_addr));
+    printf("服务port: %d\n", 1234);
+    printf("开始监听>>>>\n");
+
+    // 接收客户端请求
+    struct sockaddr_in clientAddr; // 客户端的地址
+    socklen_t clientAddrSize = sizeof(clientAddr);
+
+    printf("阻塞在accept(),等待.....\n");
+    int cliSocketFd = accept(servSocketFd, (struct sockaddr *)&clientAddr, &clientAddrSize);
+    if (-1 == cliSocketFd)
+    {
+        printf("accept fail.");
+        return -1;
+    }
+
+    // 向客户端发送数据
+    char str[100] = "server";
+    // write(cliSocketFd, str, sizeof(str));
+    printf("发送字符: %s\n", str);
+    ssize_t status = send(cliSocketFd, str, sizeof(str), 0);
+    if (-1 == status)
+    {
+        printf("send fail.");
+        return -1;
+    }
+
+    // 关闭套接字
+    close(cliSocketFd);
+    close(servSocketFd);
+    printf("关闭套接字\n");
+    return 0;
+}
+```
+
+### 4.2 客户端(CLIENT)
+
+```c
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <arpa/inet.h>
+#include <sys/socket.h>
+
+int main()
+{
+    // 创建套接字
+    int sock = socket(AF_INET, SOCK_STREAM, 0);
+    // 向服务器（特定的IP和端口）发起请求
+    struct sockaddr_in servAddr;
+    memset(&servAddr, 0, sizeof(servAddr));           // 每个字节都用 0 填充
+    servAddr.sin_family = AF_INET;                     // 使用IPv4地址
+    servAddr.sin_addr.s_addr = inet_addr("127.0.0.1"); // 具体的IP地址
+    servAddr.sin_port = htons(1234);                   // 端口
+
+    if (-1 == connect(sock, (struct sockaddr *)&servAddr, sizeof(servAddr)))
+    {
+        printf("建立连接失败\n");
+        return -1;
+    }
+    printf("阻塞再read()，等待服务器回消息\n");
+    // 读取服务器传回的数据
+    char buf[100];
+    // read(sock, buffer, sizeof(buffer)-1);
+    recv(sock, buf, sizeof(buf), 0);
+    // for (int i = 0; i < 20; i++)
+    // {
+    //     char buffer[2];
+    //     // read(sock, buffer, sizeof(buffer)-1);
+    //     recv(sock, buffer, sizeof(buffer), 0);
+    //     buf[2 * i] = buffer[0];
+    //     buf[2 * i + 1] = buffer[1];
+    // }
+    printf("客户端接收到消息:%s\n", buf);
+    // 关闭套接字
+    close(sock);
+    return 0;
+}
+```
+
+### 4.3 测试效果(TESTING)
+
+```shell
+
+# 1. 清理
+make clean
+
+# 2. make 生成二进制 ./server.out ./client.out
+make
+
+# 3. 先启动服务端
+ghostcloud@gc:/code/capp/cplus-doc/tmp/demo-socket$ ./server.out 
+服务器启动....
+ip: 127.0.0.1
+服务port: 1234
+开始监听>>>>
+阻塞在accept(),等待.....
+发送字符: server
+关闭套接字
+
+# 4. 新开再启动客户端
+ghostcloud@gc:/code/capp/cplus-doc/tmp/demo-socket$ ./client.out 
+阻塞再read()，等待服务器回消息
+客户端接收到消息:server
 ```
