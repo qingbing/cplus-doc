@@ -388,7 +388,7 @@ make clean
 make
 
 # 3. 先启动服务端
-ghostcloud@gc:/code/capp/cplus-doc/090.projects/011.demo-socket$ ./server.out 
+ghostcloud@gc:/code/capp/cplus-doc/090.projects/011.socket$ ./server.out 
 服务器启动....
 ip: 127.0.0.1
 服务port: 1234
@@ -398,7 +398,7 @@ ip: 127.0.0.1
 关闭套接字
 
 # 4. 新开再启动客户端
-ghostcloud@gc:/code/capp/cplus-doc/090.projects/011.demo-socket$ ./client.out 
+ghostcloud@gc:/code/capp/cplus-doc/090.projects/011.socket$ ./client.out 
 阻塞再read()，等待服务器回消息
 客户端接收到消息:server
 ```
