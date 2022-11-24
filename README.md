@@ -75,8 +75,6 @@ md为主的文案
         - [readme](./090.projects/011.socket/readme.md)
     - 012.udp
         - [udp编程整理](./090.projects/012.udp/udp编程整理.md)
-    - 012.udp
-        - [udp编程整理](./090.projects/012.udp/udp编程整理.md)
 - 100.other
     - [001.计算机知识](./100.other/001.计算机知识.md)
     - [002.c语言动态库的编写](./100.other/002.c语言动态库的编写.md)
