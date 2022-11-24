@@ -6,9 +6,9 @@
 
 ## 1. 分析
 
-- socket(AF_INET, SOCK_DGRAM, 0)
+- socket(AF_INET, SOCK_STREAM, 0)
   - AF_INET: 使用 ipv4
-  - SOCK_DGRAM: 使用不连续不可信赖的数据包连接
+  - SOCK_STREAM: 提供双向连续且可信赖的数据流
   - 0: 传输协议编号，通常此参考不用管它，设为0即可
 
 - tcp 服务端和客户端流程
