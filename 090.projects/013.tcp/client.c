@@ -13,6 +13,19 @@ extern void readme();
 extern void autoSend();
 extern void manualSend();
 
+/**
+ * 封装一个获取 socket 地址的函数
+ */
+struct sockaddr_in *socketIpAddress(const char *ip, uint16_t port)
+{
+    // 使用 malloc 分配内容
+    struct sockaddr_in *ipAddr = (struct sockaddr_in *)malloc(sizeof(struct sockaddr_in));
+    ipAddr->sin_family = AF_INET;
+    ipAddr->sin_port = htons(port);
+    ipAddr->sin_addr.s_addr = inet_addr(ip);
+    return ipAddr;
+}
+
 int main(int argc, char const *argv[])
 {
     // 参数判断
@@ -33,32 +46,27 @@ int main(int argc, char const *argv[])
     int sockfd = socket(AF_INET, SOCK_STREAM, 0);
     assert(sockfd != -1);
 
-    struct sockaddr_in ser_addr;
-    memset(&ser_addr, 0, sizeof(ser_addr));
-    ser_addr.sin_family = AF_INET;
-    ser_addr.sin_port = htons(6000);                   //转化端口号
-    ser_addr.sin_addr.s_addr = inet_addr("127.0.0.1"); //回环地址
+    struct sockaddr_in *servAddr = socketIpAddress("127.0.0.1", 6000);
 
     //连接服务器，需要知道服务器绑定的IP和端口
-    int res = connect(sockfd, (struct sockaddr *)&ser_addr, sizeof(ser_addr));
+    int res = connect(sockfd, (struct sockaddr *)servAddr, sizeof(*servAddr));
     assert(res != -1);
 
     //通信
     if (1 == sendMode)
     {
-        autoSend(sockfd);
+        autoSend(sockfd); // 自动发送
     }
     else
     {
-        manualSend(sockfd);
+        manualSend(sockfd); // 手动发送
     }
-
     //断开连接
     close(sockfd);
-
     return 0;
 }
 
+// 工具介绍
 void readme()
 {
     printf("========== 使用说明 START ==========\n");
@@ -70,6 +78,7 @@ void readme()
     printf("========== 使用说明 END   ==========\n");
 }
 
+// 数据自动发送
 void autoSend(int sockfd)
 {
     int count = 0;
@@ -78,7 +87,7 @@ void autoSend(int sockfd)
         count++;
 
         char buff[128];
-        sprintf(buff, "第 %d 次发送", count);
+        sprintf(buff, "第%d次发送", count);
         send(sockfd, buff, strlen(buff), 0); //\n不发
 
         memset(buff, 0, 128);
@@ -87,6 +96,8 @@ void autoSend(int sockfd)
         usleep(1000000);
     }
 }
+
+// 数据手动发送
 void manualSend(int sockfd)
 {
     while (1)

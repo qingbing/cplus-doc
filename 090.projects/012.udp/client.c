@@ -51,18 +51,16 @@ int main(int argc, char const *argv[])
 
     if (1 == sendMode)
     {
-        // 自动发送数据包
-        autoSend(sockfd, servAddr);
+        autoSend(sockfd, servAddr);// 自动发送数据包
     }
     else
     {
-        // 手动发送数据包
-        manualSend(sockfd, servAddr);
+        manualSend(sockfd, servAddr);// 手动发送数据包
     }
-
     close(sockfd);
 }
 
+// 工具介绍
 void readme()
 {
     printf("========== 使用说明 START ==========\n");
